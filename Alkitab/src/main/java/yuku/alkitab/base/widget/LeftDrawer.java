@@ -322,13 +322,7 @@ public abstract class LeftDrawer extends NestedScrollView {
 			bCurrentReadingClose = findViewById(R.id.bCurrentReadingClose);
 			bCurrentReadingReference = findViewById(R.id.bCurrentReadingReference);
 
-			final boolean followSystemTheme = Preferences.getBoolean(Prefkey.follow_system_theme, true);
-			if (followSystemTheme) {
-				final int systemTheme = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-				cNightMode.setChecked(!isInEditMode() && systemTheme == Configuration.UI_MODE_NIGHT_YES);
-			} else {
-				cNightMode.setChecked(!isInEditMode() && Preferences.getBoolean(Prefkey.is_night_mode, false));
-			}
+			final boolean followSystemTheme = checkSystemTheme();
 			cNightMode.setEnabled(!followSystemTheme);
 			cFollowSystemTheme.setChecked(followSystemTheme);
 
@@ -384,6 +378,17 @@ public abstract class LeftDrawer extends NestedScrollView {
 			filter.addAction(CurrentReading.ACTION_CURRENT_READING_CHANGED);
 			filter.addAction(IsiActivity.ACTION_ACTIVE_VERSION_CHANGED);
 			App.getLbm().registerReceiver(currentReadingChangeReceiver, filter);
+		}
+
+		public boolean checkSystemTheme() {
+			final boolean followSystemTheme = Preferences.getBoolean(Prefkey.follow_system_theme, true);
+			if (followSystemTheme) {
+				final int systemTheme = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+				cNightMode.setChecked(!isInEditMode() && systemTheme == Configuration.UI_MODE_NIGHT_YES);
+			} else {
+				cNightMode.setChecked(!isInEditMode() && Preferences.getBoolean(Prefkey.is_night_mode, false));
+			}
+			return followSystemTheme;
 		}
 
 		@Override

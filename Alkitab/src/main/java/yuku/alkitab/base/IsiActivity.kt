@@ -136,6 +136,7 @@ private const val EXTRA_verseUrl = "verseUrl"
 private const val INSTANCE_STATE_ari = "ari"
 
 class IsiActivity : BaseLeftDrawerActivity(), LeftDrawer.Text.Listener {
+    private lateinit var mPrevConfig: Configuration
     var uncheckVersesWhenActionModeDestroyed = true
     var needsRestart = false // whether this activity needs to be restarted
 
@@ -1709,6 +1710,14 @@ class IsiActivity : BaseLeftDrawerActivity(), LeftDrawer.Text.Listener {
         }
 
         return arrayOf(res0.toString(), res1.toString())
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+
+        leftDrawer.checkSystemTheme()
+
+        mPrevConfig = Configuration(newConfig)
     }
 
     fun applyPreferences() {
