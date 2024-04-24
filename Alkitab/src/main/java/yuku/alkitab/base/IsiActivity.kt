@@ -658,9 +658,7 @@ class IsiActivity : BaseLeftDrawerActivity(), LeftDrawer.Text.Listener {
 
             return when (val itemId = item.itemId) {
                 R.id.menuCopy, R.id.menuCopySplit0, R.id.menuCopySplit1, R.id.menuCopyBothSplits -> {
-
                     // copy, can be multiple verses
-
                     val reference = referenceFromSelectedVerses(selected, activeSplit0.book)
                     val activeSplit1 = activeSplit1
                     val t = if (itemId == R.id.menuCopy || itemId == R.id.menuCopySplit0 || itemId == R.id.menuCopyBothSplits || activeSplit1 == null) {
@@ -678,27 +676,37 @@ class IsiActivity : BaseLeftDrawerActivity(), LeftDrawer.Text.Listener {
                     val textToCopy = t[0]
                     val textToSubmit = t[1]
 
-                    ShareUrl.make(this@IsiActivity, !Preferences.getBoolean(getString(R.string.pref_copyWithShareUrl_key), resources.getBoolean(R.bool.pref_copyWithShareUrl_default)), textToSubmit, Ari.encode(activeSplit0.book.bookId, chapter_1, 0), selected, reference.toString(), activeSplit0.version, MVersionDb.presetNameFromVersionId(activeSplit0.versionId), object : ShareUrl.Callback {
-                        override fun onSuccess(shareUrl: String) {
-                            ClipboardUtil.copyToClipboard(textToCopy + "\n\n" + shareUrl)
-                        }
+                    ShareUrl.make(
+                        activity = this@IsiActivity,
+                        immediatelyCancel = !Preferences.getBoolean(getString(R.string.pref_copyWithShareUrl_key), resources.getBoolean(R.bool.pref_copyWithShareUrl_default)),
+                        verseText = textToSubmit,
+                        ari_bc = Ari.encode(activeSplit0.book.bookId, chapter_1, 0),
+                        selectedVerses_1 = selected,
+                        reference = reference,
+                        version = activeSplit0.version,
+                        preset_name = MVersionDb.presetNameFromVersionId(activeSplit0.versionId),
+                        callback = object : ShareUrl.Callback {
+                            override fun onSuccess(shareUrl: String) {
+                                ClipboardUtil.copyToClipboard("$textToCopy\n\n$shareUrl")
+                            }
 
-                        override fun onUserCancel() {
-                            ClipboardUtil.copyToClipboard(textToCopy)
-                        }
+                            override fun onUserCancel() {
+                                ClipboardUtil.copyToClipboard(textToCopy)
+                            }
 
-                        override fun onError(e: Exception) {
-                            AppLog.e(TAG, "Error in ShareUrl, copying without shareUrl", e)
-                            ClipboardUtil.copyToClipboard(textToCopy)
-                        }
+                            override fun onError(e: Exception) {
+                                AppLog.e(TAG, "Error in ShareUrl, copying without shareUrl", e)
+                                ClipboardUtil.copyToClipboard(textToCopy)
+                            }
 
-                        override fun onFinally() {
-                            lsSplit0.uncheckAllVerses(true)
+                            override fun onFinally() {
+                                lsSplit0.uncheckAllVerses(true)
 
-                            Snackbar.make(root, getString(R.string.alamat_sudah_disalin, reference), Snackbar.LENGTH_SHORT).show()
-                            mode.finish()
+                                Snackbar.make(root, getString(R.string.alamat_sudah_disalin, reference), Snackbar.LENGTH_SHORT).show()
+                                mode.finish()
+                            }
                         }
-                    })
+                    )
 
                     true
                 }
@@ -725,31 +733,41 @@ class IsiActivity : BaseLeftDrawerActivity(), LeftDrawer.Text.Listener {
 
                     val intent = ShareCompat.IntentBuilder(this@IsiActivity)
                         .setType("text/plain")
-                        .setSubject(reference.toString())
+                        .setSubject(reference)
                         .intent
 
-                    ShareUrl.make(this@IsiActivity, !Preferences.getBoolean(getString(R.string.pref_copyWithShareUrl_key), resources.getBoolean(R.bool.pref_copyWithShareUrl_default)), textToSubmit, Ari.encode(activeSplit0.book.bookId, chapter_1, 0), selected, reference.toString(), activeSplit0.version, MVersionDb.presetNameFromVersionId(activeSplit0.versionId), object : ShareUrl.Callback {
-                        override fun onSuccess(shareUrl: String) {
-                            intent.putExtra(Intent.EXTRA_TEXT, textToShare + "\n\n" + shareUrl)
-                            intent.putExtra(EXTRA_verseUrl, shareUrl)
-                        }
+                    ShareUrl.make(
+                        activity = this@IsiActivity,
+                        immediatelyCancel = !Preferences.getBoolean(getString(R.string.pref_copyWithShareUrl_key), resources.getBoolean(R.bool.pref_copyWithShareUrl_default)),
+                        verseText = textToSubmit,
+                        ari_bc = Ari.encode(activeSplit0.book.bookId, chapter_1, 0),
+                        selectedVerses_1 = selected,
+                        reference = reference,
+                        version = activeSplit0.version,
+                        preset_name = MVersionDb.presetNameFromVersionId(activeSplit0.versionId),
+                        callback = object : ShareUrl.Callback {
+                            override fun onSuccess(shareUrl: String) {
+                                intent.putExtra(Intent.EXTRA_TEXT, "$textToShare\n\n$shareUrl")
+                                intent.putExtra(EXTRA_verseUrl, shareUrl)
+                            }
 
-                        override fun onUserCancel() {
-                            intent.putExtra(Intent.EXTRA_TEXT, textToShare)
-                        }
+                            override fun onUserCancel() {
+                                intent.putExtra(Intent.EXTRA_TEXT, textToShare)
+                            }
 
-                        override fun onError(e: Exception) {
-                            AppLog.e(TAG, "Error in ShareUrl, sharing without shareUrl", e)
-                            intent.putExtra(Intent.EXTRA_TEXT, textToShare)
-                        }
+                            override fun onError(e: Exception) {
+                                AppLog.e(TAG, "Error in ShareUrl, sharing without shareUrl", e)
+                                intent.putExtra(Intent.EXTRA_TEXT, textToShare)
+                            }
 
-                        override fun onFinally() {
-                            startActivity(Intent.createChooser(intent, getString(R.string.bagikan_alamat, reference)))
+                            override fun onFinally() {
+                                startActivity(Intent.createChooser(intent, getString(R.string.bagikan_alamat, reference)))
 
-                            lsSplit0.uncheckAllVerses(true)
-                            mode.finish()
+                                lsSplit0.uncheckAllVerses(true)
+                                mode.finish()
+                            }
                         }
-                    })
+                    )
                     true
                 }
 
@@ -995,8 +1013,8 @@ class IsiActivity : BaseLeftDrawerActivity(), LeftDrawer.Text.Listener {
             if (book == null) return
             val referenceSplit = referenceFromSelectedVerses(selectedVerses_1, book)
             val a = prepareTextForCopyShare(selectedVerses_1, referenceSplit, true)
-            t[0] += "\n\n" + a[0]
-            t[1] += "\n\n" + a[1]
+            t[0] += "\n\n${a[0]}"
+            t[1] += "\n\n${a[1]}"
         }
 
         override fun onDestroyActionMode(mode: ActionMode) {
@@ -1442,7 +1460,7 @@ class IsiActivity : BaseLeftDrawerActivity(), LeftDrawer.Text.Listener {
 
     private fun displayActiveVersion() {
         bVersion.text = activeSplit0.version.initials
-        splitHandleButton.setLabel1("\u25b2 " + activeSplit0.version.initials)
+        splitHandleButton.setLabel1("\u25b2 ${activeSplit0.version.initials}")
     }
 
     private fun loadSplitVersion(mv: MVersion): Boolean {
@@ -1451,7 +1469,7 @@ class IsiActivity : BaseLeftDrawerActivity(), LeftDrawer.Text.Listener {
 
             activeSplit1 = ActiveSplit1(mv, version, mv.versionId)
 
-            splitHandleButton.setLabel2(version.initials + " \u25bc")
+            splitHandleButton.setLabel2("${version.initials} \u25bc")
 
             configureTextAppearancePanelForSplitVersion()
 
