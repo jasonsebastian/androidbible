@@ -15,9 +15,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import okhttp3.Call;
 import okhttp3.FormBody;
@@ -202,7 +199,6 @@ public class Sync {
     }
 
     private static final ArrayMap<String, AtomicInteger> syncUpdatesOngoingCounters = new ArrayMap<>();
-    private static final ScheduledExecutorService syncExecutor = Executors.newSingleThreadScheduledExecutor();
     private static final ConcurrentLinkedQueue<String> syncSetNameQueue = new ConcurrentLinkedQueue<>();
 
     /**
@@ -241,32 +237,30 @@ public class Sync {
             }
         }
 
-        syncExecutor.schedule(() -> {
+        final List<String> extraSyncSetNames = new ArrayList<>();
+        synchronized (syncSetNameQueue) {
             while (true) {
-                final List<String> extraSyncSetNames = new ArrayList<>();
-                synchronized (syncSetNameQueue) {
-                    final String extraSyncSetName = syncSetNameQueue.poll();
-                    if (extraSyncSetName == null) {
-                        break;
-                    }
-                    extraSyncSetNames.add(extraSyncSetName);
+                final String extraSyncSetName = syncSetNameQueue.poll();
+                if (extraSyncSetName == null) {
+                    break;
                 }
-
-                final Account account = SyncUtils.getOrCreateSyncAccount();
-                final String authority = App.context.getString(R.string.sync_provider_authority);
-
-                // make sure sync is enabled.
-                final boolean syncAutomatically = ContentResolver.getSyncAutomatically(account, authority);
-                if (!syncAutomatically) {
-                    ContentResolver.setSyncAutomatically(account, authority, true);
-                }
-
-                // request sync.
-                final Bundle extras = new Bundle();
-                extras.putString(SyncAdapter.EXTRA_SYNC_SET_NAMES, App.getDefaultGson().toJson(extraSyncSetNames));
-                ContentResolver.requestSync(account, authority, extras);
+                extraSyncSetNames.add(extraSyncSetName);
             }
-        }, 5, TimeUnit.SECONDS);
+        }
+
+        final Account account = SyncUtils.getOrCreateSyncAccount();
+        final String authority = App.context.getString(R.string.sync_provider_authority);
+
+        // make sure sync is enabled.
+        final boolean syncAutomatically = ContentResolver.getSyncAutomatically(account, authority);
+        if (!syncAutomatically) {
+            ContentResolver.setSyncAutomatically(account, authority, true);
+        }
+
+        // request sync.
+        final Bundle extras = new Bundle();
+        extras.putString(SyncAdapter.EXTRA_SYNC_SET_NAMES, App.getDefaultGson().toJson(extraSyncSetNames));
+        ContentResolver.requestSync(account, authority, extras);
     }
 
     /**
