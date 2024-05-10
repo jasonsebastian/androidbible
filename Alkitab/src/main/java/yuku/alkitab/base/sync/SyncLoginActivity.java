@@ -14,7 +14,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.util.PatternsCompat;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import java.util.Locale;
 import yuku.alkitab.base.App;
@@ -23,6 +22,7 @@ import yuku.alkitab.base.util.AppLog;
 import yuku.alkitab.base.util.Background;
 import yuku.alkitab.base.widget.MaterialDialogJavaHelper;
 import yuku.alkitab.debug.R;
+import yuku.alkitab.tracking.Analytics;
 import yuku.alkitab.tracking.Tracker;
 
 public class SyncLoginActivity extends BaseActivity {
@@ -115,9 +115,9 @@ public class SyncLoginActivity extends BaseActivity {
                         final Sync.LoginResponseJson response = Sync.register(form);
 
                         Tracker.trackEvent(
-                            FirebaseAnalytics.Event.SIGN_UP,
-                            FirebaseAnalytics.Param.METHOD, SIGNUP_METHOD,
-                            FirebaseAnalytics.Param.SUCCESS, 1
+                            Analytics.Event.SIGN_UP,
+                            Analytics.Param.METHOD, SIGNUP_METHOD,
+                            Analytics.Param.SUCCESS, 1
                         );
 
                         FirebaseCrashlytics.getInstance().setUserId(form.email);
@@ -128,9 +128,9 @@ public class SyncLoginActivity extends BaseActivity {
                         SyncRecorder.log(SyncRecorder.EventKind.register_failed, null, "email", email, "message", e.getMessage());
 
                         Tracker.trackEvent(
-                            FirebaseAnalytics.Event.SIGN_UP,
-                            FirebaseAnalytics.Param.METHOD, SIGNUP_METHOD,
-                            FirebaseAnalytics.Param.SUCCESS, 0
+                            Analytics.Event.SIGN_UP,
+                            Analytics.Param.METHOD, SIGNUP_METHOD,
+                            Analytics.Param.SUCCESS, 0
                         );
 
                         runOnUiThread(() -> MaterialDialogJavaHelper.showOkDialog(this, getString(R.string.sync_register_failed_with_reason, e.getMessage())));
@@ -169,9 +169,9 @@ public class SyncLoginActivity extends BaseActivity {
                     final Sync.LoginResponseJson response = Sync.login(email, password);
 
                     Tracker.trackEvent(
-                        FirebaseAnalytics.Event.LOGIN,
-                        FirebaseAnalytics.Param.METHOD, SIGNUP_METHOD,
-                        FirebaseAnalytics.Param.SUCCESS, 1
+                        Analytics.Event.LOGIN,
+                        Analytics.Param.METHOD, SIGNUP_METHOD,
+                        Analytics.Param.SUCCESS, 1
                     );
 
                     FirebaseCrashlytics.getInstance().setUserId(email);
@@ -182,9 +182,9 @@ public class SyncLoginActivity extends BaseActivity {
                     SyncRecorder.log(SyncRecorder.EventKind.login_failed, null, "email", email, "message", e.getMessage());
 
                     Tracker.trackEvent(
-                        FirebaseAnalytics.Event.LOGIN,
-                        FirebaseAnalytics.Param.METHOD, SIGNUP_METHOD,
-                        FirebaseAnalytics.Param.SUCCESS, 0
+                        Analytics.Event.LOGIN,
+                        Analytics.Param.METHOD, SIGNUP_METHOD,
+                        Analytics.Param.SUCCESS, 0
                     );
 
                     runOnUiThread(() -> MaterialDialogJavaHelper.showOkDialog(

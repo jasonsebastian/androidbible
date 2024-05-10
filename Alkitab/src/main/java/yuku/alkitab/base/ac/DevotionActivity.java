@@ -24,7 +24,6 @@ import androidx.core.app.ShareCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -51,6 +50,7 @@ import yuku.alkitab.base.widget.LeftDrawer;
 import yuku.alkitab.base.widget.MaterialDialogJavaHelper;
 import yuku.alkitab.base.widget.TwofingerLinearLayout;
 import yuku.alkitab.debug.R;
+import yuku.alkitab.tracking.Analytics;
 import yuku.alkitab.tracking.Tracker;
 import yuku.alkitab.util.Ari;
 import yuku.alkitabintegration.display.Launcher;
@@ -250,7 +250,7 @@ public class DevotionActivity extends BaseLeftDrawerActivity implements LeftDraw
             final String currentDate = yyyymmdd.get().format(ac.currentDate);
             if (equals(startKind, ac.currentKind) && equals(startDate, currentDate)) {
                 AppLog.d(TAG, "Long read detected: now=[" + ac.currentKind + " " + currentDate + "]");
-                Tracker.trackEvent("devotion_longread", FirebaseAnalytics.Param.ITEM_NAME, startKind.name, FirebaseAnalytics.Param.START_DATE, yyyy_mm_dd.get().format(ac.currentDate));
+                Tracker.trackEvent("devotion_longread", Analytics.Param.ITEM_NAME, startKind.name, Analytics.Param.START_DATE, yyyy_mm_dd.get().format(ac.currentDate));
             } else {
                 AppLog.d(TAG, "Not long enough for long read: previous=[" + startKind + " " + startDate + "] now=[" + ac.currentKind + " " + currentDate + "]");
             }
@@ -434,7 +434,7 @@ public class DevotionActivity extends BaseLeftDrawerActivity implements LeftDraw
         }
 
         if (renderSucceeded) {
-            Tracker.trackEvent("devotion_render", FirebaseAnalytics.Param.ITEM_NAME, currentKind.name, FirebaseAnalytics.Param.START_DATE, yyyy_mm_dd.get().format(currentDate));
+            Tracker.trackEvent("devotion_render", Analytics.Param.ITEM_NAME, currentKind.name, Analytics.Param.START_DATE, yyyy_mm_dd.get().format(currentDate));
             longReadChecker.start();
         }
     }

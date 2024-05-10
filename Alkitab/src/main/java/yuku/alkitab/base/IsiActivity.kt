@@ -49,7 +49,6 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.analytics.FirebaseAnalytics
 import java.util.Calendar
 import java.util.Date
 import java.util.GregorianCalendar
@@ -124,6 +123,7 @@ import yuku.alkitab.model.PericopeBlock
 import yuku.alkitab.model.SingleChapterVerses
 import yuku.alkitab.model.Version
 import yuku.alkitab.ribka.RibkaReportActivity
+import yuku.alkitab.tracking.Analytics
 import yuku.alkitab.tracking.Tracker
 import yuku.alkitab.util.Ari
 import yuku.alkitab.util.IntArrayList
@@ -2115,9 +2115,9 @@ class IsiActivity : BaseLeftDrawerActivity(), LeftDrawer.Text.Listener {
     private fun trackVersionSelect(mv: MVersion?, isSplit: Boolean) {
         if (mv is MVersionDb) {
             val preset_name = mv.preset_name
-            Tracker.trackEvent("versions_dialog_select", "is_split", isSplit, FirebaseAnalytics.Param.ITEM_NAME, preset_name ?: "no_preset_name")
+            Tracker.trackEvent("versions_dialog_select", "is_split", isSplit, Analytics.Param.ITEM_NAME, preset_name ?: "no_preset_name")
         } else if (mv is MVersionInternal) {
-            Tracker.trackEvent("versions_dialog_select", "is_split", isSplit, FirebaseAnalytics.Param.ITEM_NAME, "internal")
+            Tracker.trackEvent("versions_dialog_select", "is_split", isSplit, Analytics.Param.ITEM_NAME, "internal")
         }
     }
 

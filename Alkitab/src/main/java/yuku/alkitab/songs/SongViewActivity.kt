@@ -31,7 +31,6 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.callbacks.onDismiss
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.analytics.FirebaseAnalytics
 import java.io.IOException
 import java.util.Locale
 import yuku.afw.storage.Preferences
@@ -57,6 +56,7 @@ import yuku.alkitab.base.widget.MaterialDialogProgressHelper.progress
 import yuku.alkitab.base.widget.TwofingerLinearLayout
 import yuku.alkitab.debug.BuildConfig
 import yuku.alkitab.debug.R
+import yuku.alkitab.tracking.Analytics
 import yuku.alkitab.tracking.Tracker
 import yuku.alkitabintegration.display.Launcher
 import yuku.kpri.model.Song
@@ -111,7 +111,7 @@ class SongViewActivity : BaseLeftDrawerActivity(), SongFragment.ShouldOverrideUr
         }
 
         override fun onTwofingerScale(scale: Float) {
-            var newTextZoom = (textZoom * scale).toInt().coerceIn(50, 200)
+            val newTextZoom = (textZoom * scale).toInt().coerceIn(50, 200)
 
             val f = supportFragmentManager.findFragmentByTag(FRAGMENT_TAG_SONG)
             if (f is SongFragment) {
@@ -172,9 +172,9 @@ class SongViewActivity : BaseLeftDrawerActivity(), SongFragment.ShouldOverrideUr
                 if (currentBookName != null && currentSong != null) {
                     Tracker.trackEvent(
                         "song_playing",
-                        FirebaseAnalytics.Param.ITEM_NAME, currentBookName + " " + currentSong.code,
-                        FirebaseAnalytics.Param.ITEM_CATEGORY, currentBookName,
-                        FirebaseAnalytics.Param.ITEM_VARIANT, currentSong.code
+                        Analytics.Param.ITEM_NAME, currentBookName + " " + currentSong.code,
+                        Analytics.Param.ITEM_CATEGORY, currentBookName,
+                        Analytics.Param.ITEM_VARIANT, currentSong.code
                     )
                 }
 
@@ -1130,9 +1130,9 @@ class SongViewActivity : BaseLeftDrawerActivity(), SongFragment.ShouldOverrideUr
         private fun trackSongSelect(bookName: String, code: String) {
             Tracker.trackEvent(
                 "song_select",
-                FirebaseAnalytics.Param.ITEM_NAME, "$bookName $code",
-                FirebaseAnalytics.Param.ITEM_CATEGORY, bookName,
-                FirebaseAnalytics.Param.ITEM_VARIANT, code
+                Analytics.Param.ITEM_NAME, "$bookName $code",
+                Analytics.Param.ITEM_CATEGORY, bookName,
+                Analytics.Param.ITEM_VARIANT, code
             )
         }
 

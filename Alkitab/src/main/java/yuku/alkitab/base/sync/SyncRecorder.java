@@ -4,13 +4,13 @@ import android.util.SparseArray;
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import java.util.HashMap;
 import yuku.afw.storage.Preferences;
 import yuku.alkitab.base.App;
 import yuku.alkitab.base.S;
 import yuku.alkitab.base.storage.Prefkey;
 import yuku.alkitab.base.util.Sqlitil;
+import yuku.alkitab.tracking.Analytics;
 import yuku.alkitab.tracking.Tracker;
 
 /**
@@ -66,7 +66,7 @@ public class SyncRecorder {
 			this.backgroundColor = backgroundColor;
 		}
 
-		static SparseArray<EventKind> codeIndex = new SparseArray<>();
+		static final SparseArray<EventKind> codeIndex = new SparseArray<>();
 
 		static {
 			for (final EventKind kind : values()) {
@@ -98,7 +98,7 @@ public class SyncRecorder {
 		}
 
 		S.getDb().insertSyncLog(Sqlitil.nowDateTime(), kind, syncSetName, params);
-		Tracker.trackEvent("sync", FirebaseAnalytics.Param.ITEM_NAME, kind.name());
+		Tracker.trackEvent("sync", Analytics.Param.ITEM_NAME, kind.name());
 	}
 
 	@Keep
