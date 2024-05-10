@@ -17,7 +17,6 @@ import yuku.alkitab.base.sync.Sync;
 import yuku.alkitab.base.util.ExtensionManager;
 import yuku.alkitab.debug.BuildConfig;
 import yuku.alkitab.debug.R;
-import yuku.alkitab.tracking.Tracker;
 import yuku.alkitabfeedback.FeedbackSender;
 import yuku.alkitabintegration.display.Launcher;
 
@@ -47,8 +46,6 @@ public class App extends yuku.afw.App {
         if (context == null) {
             throw new RuntimeException("yuku.afw.App.context must have been set via initWithAppContext(Context) before calling this method.");
         }
-
-        Tracker.init(context);
 
         FeedbackSender.getInstance(context).trySend();
 
