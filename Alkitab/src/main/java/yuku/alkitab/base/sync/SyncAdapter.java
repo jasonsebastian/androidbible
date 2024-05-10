@@ -175,13 +175,11 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		AppLog.d(TAG, "Sync result: " + syncResult + " hasSoftError=" + syncResult.hasSoftError() + " hasHardError=" + syncResult.hasHardError() + " ioex=" + syncResult.stats.numIoExceptions);
 	}
 
-	public static Set<String> getRunningSyncs() {
-		final Set<String> res = new LinkedHashSet<>();
-		synchronized (syncSetsRunning) {
-			res.addAll(syncSetsRunning);
-		}
-		return res;
-	}
+    public static Set<String> getRunningSyncs() {
+        synchronized (syncSetsRunning) {
+            return new LinkedHashSet<>(syncSetsRunning);
+        }
+    }
 
 	/** Based on operations in append_delta, fill in SyncStats */
 	static <C> void fillInStatsFromAppendDelta(final Sync.Delta<C> append_delta, final SyncResult sr) {
@@ -203,7 +201,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	/**
 	 * If the client state's delta is too big, we remove some of the changes, so only some changes are transmitted to the server,
 	 * and the server will not time out anymore.
-	 *
+	 * <p>
 	 * WARNING: If you are using partial sync by this method, do not create sync shadow from the current state, but you must
 	 * create it from an existing sync shadow by applying the client delta AND the append delta (given from the server).
 	 * Also, the current state must be updated using the append delta from the server.
@@ -278,7 +276,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		);
 
 
-		AppLog.d(TAG, "@@syncMabel step 30: doing actual http request in this thread (" + Thread.currentThread().getId() + ":" + Thread.currentThread().toString() + ")");
+		AppLog.d(TAG, "@@syncMabel step 30: doing actual http request in this thread (" + Thread.currentThread().getId() + ":" + Thread.currentThread() + ")");
 		try {
 			// arbritrary amount of time may pass on the next line. It is possible for the current data to be modified during this operation.
 			SyncRecorder.log(SyncRecorder.EventKind.sync_to_server_pre, syncSetName, "serverPrefix", Sync.getEffectiveServerPrefix());
@@ -379,7 +377,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		);
 
 
-		AppLog.d(TAG, "@@syncHistory step 30: doing actual http request in this thread (" + Thread.currentThread().getId() + ":" + Thread.currentThread().toString() + ")");
+		AppLog.d(TAG, "@@syncHistory step 30: doing actual http request in this thread (" + Thread.currentThread().getId() + ":" + Thread.currentThread() + ")");
 		try {
 			// arbritrary amount of time may pass on the next line. It is possible for the current data to be modified during this operation.
 			SyncRecorder.log(SyncRecorder.EventKind.sync_to_server_pre, syncSetName, "serverPrefix", Sync.getEffectiveServerPrefix());
@@ -472,7 +470,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		);
 
 
-		AppLog.d(TAG, "@@syncPins step 30: doing actual http request in this thread (" + Thread.currentThread().getId() + ":" + Thread.currentThread().toString() + ")");
+		AppLog.d(TAG, "@@syncPins step 30: doing actual http request in this thread (" + Thread.currentThread().getId() + ":" + Thread.currentThread() + ")");
 		try {
 			// arbritrary amount of time may pass on the next line. It is possible for the current data to be modified during this operation.
 			SyncRecorder.log(SyncRecorder.EventKind.sync_to_server_pre, syncSetName, "serverPrefix", Sync.getEffectiveServerPrefix());
@@ -567,7 +565,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		);
 
 
-		AppLog.d(TAG, "@@syncRp step 30: doing actual http request in this thread (" + Thread.currentThread().getId() + ":" + Thread.currentThread().toString() + ")");
+		AppLog.d(TAG, "@@syncRp step 30: doing actual http request in this thread (" + Thread.currentThread().getId() + ":" + Thread.currentThread() + ")");
 		try {
 			// arbritrary amount of time may pass on the next line. It is possible for the current data to be modified during this operation.
 			SyncRecorder.log(SyncRecorder.EventKind.sync_to_server_pre, syncSetName, "serverPrefix", Sync.getEffectiveServerPrefix());
