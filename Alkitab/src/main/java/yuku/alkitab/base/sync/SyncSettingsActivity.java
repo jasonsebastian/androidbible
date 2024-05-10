@@ -87,7 +87,6 @@ public class SyncSettingsActivity extends BaseActivity {
 		}
 
 
-		@SuppressWarnings("deprecation")
 		void updateDisplay() {
 			final String syncAccountName = Preferences.getString(R.string.pref_syncAccountName_key);
 			pref_syncAccountName.setSummary(syncAccountName != null ? syncAccountName : getString(R.string.sync_account_not_selected));
