@@ -252,8 +252,6 @@ public class Sync {
                     extraSyncSetNames.add(extraSyncSetName);
                 }
 
-                extraSyncSetNames.size();
-
                 final Account account = SyncUtils.getOrCreateSyncAccount();
                 final String authority = App.context.getString(R.string.sync_provider_authority);
 
