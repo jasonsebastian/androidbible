@@ -14,6 +14,8 @@ import android.text.method.LinkMovementMethod;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
@@ -107,9 +109,20 @@ public class DevotionActivity extends BaseLeftDrawerActivity implements LeftDraw
         display();
     }
 
+    @NonNull
     @Override
     protected LeftDrawer getLeftDrawer() {
         return leftDrawer;
+    }
+
+    @Nullable
+    @Override
+    protected ViewGroup getOverlayContainer() { return overlayContainer; }
+
+    @NonNull
+    @Override
+    public DrawerLayout getRoot() {
+        return drawerLayout;
     }
 
     public enum DevotionKind {
@@ -210,6 +223,7 @@ public class DevotionActivity extends BaseLeftDrawerActivity implements LeftDraw
     DrawerLayout drawerLayout;
     LeftDrawer.Devotion leftDrawer;
 
+    FrameLayout overlayContainer;
     TwofingerLinearLayout root;
     TextView lContent;
     NestedScrollView scrollContent;
@@ -305,6 +319,7 @@ public class DevotionActivity extends BaseLeftDrawerActivity implements LeftDraw
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_menu_white_24dp);
 
+        overlayContainer = findViewById(R.id.overlayContainer);
         root = findViewById(R.id.root);
         lContent = findViewById(R.id.lContent);
         scrollContent = findViewById(R.id.scrollContent);
@@ -326,18 +341,7 @@ public class DevotionActivity extends BaseLeftDrawerActivity implements LeftDraw
     protected void onStart() {
         super.onStart();
 
-        final S.CalculatedDimensions applied = S.applied();
-
-        { // apply background color, and clear window background to prevent overdraw
-            getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-            scrollContent.setBackgroundColor(applied.backgroundColor);
-        }
-
-        // text formats
-        lContent.setTextColor(applied.fontColor);
-        lContent.setTypeface(applied.fontFace, applied.fontBold);
-        lContent.setTextSize(TypedValue.COMPLEX_UNIT_DIP, applied.fontSize2dp);
-        lContent.setLineSpacing(0, applied.lineSpacingMult);
+        applyPreferences();
 
         final Rect padding = SettingsActivity.getPaddingBasedOnPreferences();
         lContent.setPadding(padding.left, padding.top, padding.right, padding.bottom);
@@ -345,6 +349,19 @@ public class DevotionActivity extends BaseLeftDrawerActivity implements LeftDraw
         getWindow().getDecorView().setKeepScreenOn(Preferences.getBoolean(getString(R.string.pref_keepScreenOn_key), getResources().getBoolean(R.bool.pref_keepScreenOn_default)));
 
         App.getLbm().registerReceiver(br, new IntentFilter(DevotionDownloader.ACTION_DOWNLOADED));
+    }
+
+    @Override
+    public void applyPreferences() {
+        super.applyPreferences();
+
+        final S.CalculatedDimensions applied = S.applied();
+
+        // text formats
+        lContent.setTextColor(applied.fontColor);
+        lContent.setTypeface(applied.fontFace, applied.fontBold);
+        lContent.setTextSize(TypedValue.COMPLEX_UNIT_DIP, applied.fontSize2dp);
+        lContent.setLineSpacing(0, applied.lineSpacingMult);
     }
 
     @Override

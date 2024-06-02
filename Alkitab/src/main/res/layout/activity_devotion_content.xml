@@ -1,35 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/overlayContainer"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:orientation="vertical">
+	android:layout_height="match_parent">
 
-	<androidx.appcompat.widget.Toolbar
-		android:id="@+id/toolbar"
+	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		xmlns:tools="http://schemas.android.com/tools"
 		android:layout_width="match_parent"
-		android:layout_height="?attr/actionBarSize"
-		android:background="?attr/colorPrimary" />
+		android:layout_height="match_parent"
+		android:orientation="vertical">
 
-	<yuku.alkitab.base.widget.TwofingerLinearLayout
-		android:id="@+id/root"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent">
+		<androidx.appcompat.widget.Toolbar
+			android:id="@+id/toolbar"
+			android:layout_width="match_parent"
+			android:layout_height="?attr/actionBarSize"
+			android:background="?attr/colorPrimary" />
 
-		<androidx.core.widget.NestedScrollView
-			android:id="@+id/scrollContent"
+		<yuku.alkitab.base.widget.TwofingerLinearLayout
+			android:id="@+id/root"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent">
 
-			<yuku.alkitab.base.widget.FixedTextView
-				android:id="@+id/lContent"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:paddingStart="@dimen/text_side_padding"
-				android:paddingEnd="@dimen/text_side_padding"
-				android:textIsSelectable="true"
-				tools:text="Devotion content here." />
-		</androidx.core.widget.NestedScrollView>
+			<androidx.core.widget.NestedScrollView
+				android:id="@+id/scrollContent"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent">
 
-	</yuku.alkitab.base.widget.TwofingerLinearLayout>
-</LinearLayout>
+				<yuku.alkitab.base.widget.FixedTextView
+					android:id="@+id/lContent"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:paddingStart="@dimen/text_side_padding"
+					android:paddingEnd="@dimen/text_side_padding"
+					android:textIsSelectable="true"
+					tools:text="Devotion content here." />
+			</androidx.core.widget.NestedScrollView>
+
+		</yuku.alkitab.base.widget.TwofingerLinearLayout>
+	</LinearLayout>
+</FrameLayout>

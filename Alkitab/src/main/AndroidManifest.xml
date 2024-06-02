@@ -249,7 +249,8 @@
 			android:windowSoftInputMode="adjustResize" />
 		<activity
 			android:name="yuku.alkitab.base.ac.DevotionActivity"
-			android:label="@string/menuDevotion">
+			android:label="@string/menuDevotion"
+			android:configChanges="colorMode|uiMode">
 			<meta-data
 				android:name="android.support.PARENT_ACTIVITY"
 				android:value="yuku.alkitab.base.IsiActivity" />
@@ -276,7 +277,8 @@
 			android:windowSoftInputMode="adjustResize|stateHidden" />
 		<activity
 			android:name="yuku.alkitab.songs.SongViewActivity"
-			android:label="@string/sn_songs_activity_title" />
+			android:label="@string/sn_songs_activity_title"
+			android:configChanges="colorMode|uiMode" />
 		<activity
 			android:name="yuku.alkitab.base.ac.SecretSettingsActivity"
 			android:label="Secret settings" />
@@ -286,7 +288,8 @@
 		<activity android:name="yuku.alkitab.base.ac.ReadingPlanActivity" />
 		<activity
 			android:name="yuku.alkitab.base.ac.PatchTextActivity"
-			android:windowSoftInputMode="adjustResize" />
+			android:windowSoftInputMode="adjustResize"
+			android:configChanges="colorMode|uiMode" />
 		<activity
 			android:name="yuku.alkitab.base.sync.SyncSettingsActivity"
 			android:label="@string/sync_status_activity_title" />
