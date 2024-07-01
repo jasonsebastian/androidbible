@@ -28,7 +28,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.WindowManager
-import android.widget.FrameLayout
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -242,10 +241,10 @@ class IsiActivity : BaseLeftDrawerActivity(), LeftDrawer.Text.Listener {
     }
 
     private lateinit var drawerLayout: DrawerLayout
-    lateinit var leftDrawer: LeftDrawer.Text
+    override lateinit var leftDrawer: LeftDrawer.Text
 
-    private lateinit var overlayContainer: FrameLayout
-    lateinit var root: ViewGroup
+    override lateinit var overlayContainer: ViewGroup
+    override lateinit var root: ViewGroup
     lateinit var toolbar: Toolbar
     private lateinit var nontoolbar: View
     lateinit var lsSplit0: VersesController
@@ -291,7 +290,6 @@ class IsiActivity : BaseLeftDrawerActivity(), LeftDrawer.Text.Listener {
 
     var actionMode: ActionMode? = null
     private var dictionaryMode = false
-    var textAppearancePanel: TextAppearancePanel? = null
 
     /**
      * The following "esvsbasal" thing is a personal thing by yuku that doesn't matter to anyone else.
@@ -1728,14 +1726,9 @@ class IsiActivity : BaseLeftDrawerActivity(), LeftDrawer.Text.Listener {
         return arrayOf(res0.toString(), res1.toString())
     }
 
-    fun applyPreferences() {
-        // make sure S applied variables are set first
-        S.recalculateAppliedValuesBasedOnPreferences()
-
-        // apply background color, and clear window background to prevent overdraw
-        window.setBackgroundDrawableResource(android.R.color.transparent)
+    override fun applyPreferences() {
+        super.applyPreferences()
         val backgroundColor = S.applied().backgroundColor
-        root.setBackgroundColor(backgroundColor)
 
         // scrollbar must be visible!
         val thumb = if (ColorUtils.calculateLuminance(backgroundColor) > 0.5) {
@@ -2033,47 +2026,10 @@ class IsiActivity : BaseLeftDrawerActivity(), LeftDrawer.Text.Listener {
         }
     }
 
-    private fun setShowTextAppearancePanel(yes: Boolean) {
-        if (!yes) {
-            textAppearancePanel?.hide()
-            textAppearancePanel = null
-            return
-        }
-
-        if (textAppearancePanel == null) { // not showing yet
-            textAppearancePanel = TextAppearancePanel(
-                this,
-                overlayContainer,
-                object : TextAppearancePanel.Listener {
-                    override fun onValueChanged() {
-                        applyPreferences()
-                    }
-
-                    override fun onCloseButtonClick() {
-                        textAppearancePanel?.hide()
-                        textAppearancePanel = null
-                    }
-                },
-                RequestCodes.FromActivity.TextAppearanceGetFonts,
-                RequestCodes.FromActivity.TextAppearanceCustomColors
-            )
-            configureTextAppearancePanelForSplitVersion()
-            textAppearancePanel?.show()
-        }
-    }
-
-    private fun setNightMode(yes: Boolean) {
-        val previousValue = Preferences.getBoolean(Prefkey.is_night_mode, false)
-        if (previousValue == yes) return
-
-        Preferences.setBoolean(Prefkey.is_night_mode, yes)
-
-        applyPreferences()
-        applyNightModeColors()
-
-        textAppearancePanel?.displayValues()
-
-        App.getLbm().sendBroadcast(Intent(ACTION_NIGHT_MODE_CHANGED))
+    override fun createTextAppearancePanel(): TextAppearancePanel? {
+        val panel = super.createTextAppearancePanel()
+        configureTextAppearancePanelForSplitVersion()
+        return panel
     }
 
     private fun openVersionsDialog() {
@@ -2408,10 +2364,6 @@ class IsiActivity : BaseLeftDrawerActivity(), LeftDrawer.Text.Listener {
             if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) return true
         }
         return super.onKeyUp(keyCode, event)
-    }
-
-    override fun getLeftDrawer(): LeftDrawer {
-        return leftDrawer
     }
 
     fun bLeft_click() {
@@ -2826,19 +2778,9 @@ class IsiActivity : BaseLeftDrawerActivity(), LeftDrawer.Text.Listener {
         startActivity(MarkersActivity.createIntent())
     }
 
-    override fun bDisplay_click() {
-        Tracker.trackEvent("left_drawer_display_click")
-        setShowTextAppearancePanel(textAppearancePanel == null)
-    }
-
     override fun cFullScreen_checkedChange(isChecked: Boolean) {
         Tracker.trackEvent("left_drawer_full_screen_click")
         setFullScreen(isChecked)
-    }
-
-    override fun cNightMode_checkedChange(isChecked: Boolean) {
-        Tracker.trackEvent("left_drawer_night_mode_click")
-        setNightMode(isChecked)
     }
 
     override fun cSplitVersion_checkedChange(cSplitVersion: SwitchCompat, isChecked: Boolean) {
