@@ -1361,15 +1361,27 @@ class IsiActivity : BaseLeftDrawerActivity(), LeftDrawer.Text.Listener {
     private fun extractIntent(intent: Intent): IntentResult? {
         dumpIntent(intent, "IsiActivity#onCreate")
 
-        return tryGetIntentResultFromView(intent)
+        return when (intent.action) {
+            "yuku.alkitab.action.VIEW" -> tryGetIntentResultFromCustomViewAction(intent)
+            Intent.ACTION_VIEW -> tryGetIntentResultFromViewAction(intent)
+            else -> null
+        }
+    }
+
+    private fun tryGetIntentResultFromViewAction(intent: Intent): IntentResult? {
+        val data = intent.data ?: return null
+        val pathSegments = data.pathSegments
+        if (pathSegments.size >= 2 && pathSegments[0] == "a") {
+            // TODO JS navigate content
+            IntentResult(0, false, 1)
+        }
+        return null
     }
 
     /**
      * did we get here from VIEW intent?
      */
-    private fun tryGetIntentResultFromView(intent: Intent): IntentResult? {
-        if (intent.action != "yuku.alkitab.action.VIEW") return null
-
+    private fun tryGetIntentResultFromCustomViewAction(intent: Intent): IntentResult? {
         val selectVerse = intent.getBooleanExtra("selectVerse", false)
         val selectVerseCount = intent.getIntExtra("selectVerseCount", 1)
 

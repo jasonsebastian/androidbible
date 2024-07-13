@@ -44,6 +44,20 @@
 		<activity
 			android:name="yuku.alkitab.base.IsiActivity"
 			android:exported="true">
+
+			<!-- deeplink for opening bible reading page -->
+			<intent-filter android:autoVerify="true">
+				<action android:name="android.intent.action.VIEW" />
+
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+
+				<data
+					android:scheme="https"
+					android:host="alkitab.app"
+					android:pathPrefix="/a" />
+			</intent-filter>
+
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 
